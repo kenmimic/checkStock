@@ -14,8 +14,8 @@ args=parser.parse_args()
 
 #def getLogin(UID):
   
-def BestBuy(model_number):
-  target = ("https://www.bestbuy.com/button-state/api/v5/button-state?skus=%s&conditions=&storeId=&destinationZipCode=&context=pdp&consolidated=false&source=buttonView&xboxAllAccess=false") %model_number
+def BestBuy(skuID):
+  target = ("https://www.bestbuy.com/button-state/api/v5/button-state?skus=%s&conditions=&storeId=&destinationZipCode=&context=pdp&consolidated=false&source=buttonView&xboxAllAccess=false") %skuID
   
   headers= {
   #'GET':'/button-state/api/v5/button-state?skus=6429442&conditions=&storeId=&destinationZipCode=&context=pdp&consolidated=false&source=buttonView&xboxAllAccess=false HTTP/1.1',
@@ -46,15 +46,17 @@ def BestBuy(model_number):
   #try:
   r = requests.get(target,headers=headers, cookies=cookies)
   s = BeautifulSoup(r.text, 'lxml')
-  print( "[+] Checking %s on BestBuy") %model_number
-  ExtractHref = re.search(r'(.*SOLD_OUT.*)',str([ _ for _ in s ]).replace("{","\n").replace("}","\n")) # Extrct between {} :
+  print( "[+] Checking SkuID %s on BestBuy") %skuID
+  SoldOut = re.search(r'(.*SOLD_OUT.*)',str([ _ for _ in s ]).replace("{","\n").replace("}","\n")) # Extrct between {} :
+  InStock = re.search(r'(.*ADD_TO_CART.*)',str([ _ for _ in s ]).replace("{","\n").replace("}","\n")) # Extrct between {} :
   #print(s.prettify())
-  if ExtractHref:
-        print("[-] "+ str(ExtractHref.group(1)))
+  if SoldOut:
+        print("[-] "+ str(SoldOut.group(1)))
         print('\n')
         #time.sleep(1)
-  else:
-        print("URL: https://www.bestbuy.com/site/nvidia-geforce-rtx-3070-8gb-gddr6-pci-express-4-0-graphics-card-dark-platinum-and-black/6429442.p?skuId=6429442&ref=186&loc=nvidia_6429442 ")
+  elif InStock:
+        print("URL: "+target)
+        print('\n')
   error = re.search("Invalid argument", s.text)
   if error:
     print("[-] Error found in response")
@@ -91,24 +93,38 @@ def NewEgg(model_number):
         print('\n')
         #time.sleep(1)
   else:
-        print("URL: "+target)
+        print("[+]URL: "+target)
+        print('\n')
   error = re.search("Invalid argument", s.text)
   if error:
     print("[-] Error found in response")
   return#(UID.group(1))
 
-BestBuy(6429442)
-BestBuy(6429440)
+def nvidia3080():
 
-NewEgg("zotac-geforce-rtx-3070-zt-a30700e-10p/p/N82E16814500501?cm_mmc=vendor-nvidia")
-NewEgg("asus-geforce-rtx-3070-dual-rtx3070-8g/p/N82E16814126460?cm_mmc=vendor-nvidia")
-NewEgg("evga-geforce-rtx-3070-08g-p5-3751-kr/p/N82E16814487528?cm_mmc=vendor-nvidia")
-NewEgg("asus-geforce-rtx-3080-tuf-rtx3080-10g-gaming/p/N82E16814126453?cm_mmc=vendor-nvidia")
-NewEgg("msi-geforce-rtx-3080-rtx-3080-ventus-3x-10g/p/N82E16814137600?cm_mmc=vendor-nvidia")
-NewEgg("zotac-geforce-rtx-3080-zt-a30800d-10p/p/N82E16814500502?cm_mmc=vendor-nvidia")
-NewEgg("gigabyte-geforce-rtx-3080-gv-n3080eagle-oc-10gd/p/N82E16814932330?cm_mmc=vendor-nvidia")
-NewEgg("evga-geforce-rtx-3080-10g-p5-3881-kr/p/N82E16814487522?cm_mmc=vendor-nvidia")
-NewEgg("zotac-geforce-rtx-3080-zt-t30800j-10p/p/N82E16814500504/?cm_mmc=vendor-nvidia")
-NewEgg("msi-geforce-rtx-3080-rtx-3080-ventus-3x-10g-oc/p/N82E16814137598?cm_mmc=vendor-nvidia")
-NewEgg("asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452?cm_mmc=vendor-nvidia")
-NewEgg("gigabyte-geforce-rtx-3080-gv-n3080gaming-oc-10gd/p/N82E16814932329?cm_mmc=vendor-nvidia")
+  print("Checking Nvidia 3080")
+  print("\n")
+  BestBuy(6429440)
+  NewEgg("asus-geforce-rtx-3080-tuf-rtx3080-10g-gaming/p/N82E16814126453?cm_mmc=vendor-nvidia")
+  NewEgg("msi-geforce-rtx-3080-rtx-3080-ventus-3x-10g/p/N82E16814137600?cm_mmc=vendor-nvidia")
+  NewEgg("zotac-geforce-rtx-3080-zt-a30800d-10p/p/N82E16814500502?cm_mmc=vendor-nvidia")
+  NewEgg("gigabyte-geforce-rtx-3080-gv-n3080eagle-oc-10gd/p/N82E16814932330?cm_mmc=vendor-nvidia")
+  NewEgg("evga-geforce-rtx-3080-10g-p5-3881-kr/p/N82E16814487522?cm_mmc=vendor-nvidia")
+  NewEgg("zotac-geforce-rtx-3080-zt-t30800j-10p/p/N82E16814500504/?cm_mmc=vendor-nvidia")
+  NewEgg("msi-geforce-rtx-3080-rtx-3080-ventus-3x-10g-oc/p/N82E16814137598?cm_mmc=vendor-nvidia")
+  NewEgg("asus-geforce-rtx-3080-tuf-rtx3080-o10g-gaming/p/N82E16814126452?cm_mmc=vendor-nvidia")
+  NewEgg("gigabyte-geforce-rtx-3080-gv-n3080gaming-oc-10gd/p/N82E16814932329?cm_mmc=vendor-nvidia")
+
+
+nvidia3080()
+#BestBuy(6429442) # 3070
+
+#BestBuy(6439402) # 3060 Ti
+
+#BestBuy(6331777)
+#
+
+
+#NewEgg("zotac-geforce-rtx-3070-zt-a30700e-10p/p/N82E16814500501?cm_mmc=vendor-nvidia")
+#NewEgg("asus-geforce-rtx-3070-dual-rtx3070-8g/p/N82E16814126460?cm_mmc=vendor-nvidia")
+#NewEgg("evga-geforce-rtx-3070-08g-p5-3751-kr/p/N82E16814487528?cm_mmc=vendor-nvidia")
